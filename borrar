@@ -1,0 +1,20 @@
+#!/bin/bash
+
+for x in $@; do
+    if [ ! -e "$x" ]; then
+        echo "$x no existe "
+        continue
+    fi
+    nombre=$(basename "$x")
+    destino="$HOME/.trash/$nombre"
+
+    if [ -e "$destino" ]; then
+        cont=1
+        while [ -e "$HOME/.trash/${nombre}.${cont}" ]; do
+            contador=$((contador + 1))
+        done
+        destino="$HOME/.trash/${nombre}.${cont}"
+    fi
+    mv "$x" "$destino"
+    echo "Archivo movido: $x hacia $destino"
+done

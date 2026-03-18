@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Uso: descargar_iso <URL> <checksum_esperado> [md5|sha1|sha256|sha512]
+
+if [ $# -lt 2 ]; then
+    echo "Uso: $0 <URL> <checksum> [algoritmo]"
+    echo "Ejemplo: $0 https://ejemplo.com/archivo.iso a1b2c3... sha256"
+    exit 1
+fi
+
+URL=$1
+EXPECTED=$2
+ALGO=${3:-sha256}  # Por defecto sha256
+
+# Validar algoritmo
+case $ALGO in
+    md5|sha1|sha256|sha512) ;;
+    *) echo "Error: algoritmo no soportado. Usa md5, sha1, sha256 o sha512."; exit 1 ;;
+esac
+
+# Descargar archivo
+NOMBRE=$(basename "$URL")
+echo "Descargando $NOMBRE ..."
+wget -q "$URL" -O "$NOMBRE" || { echo "Error en descarga"; exit 1; }
+
+# Calcular checksum según algoritmo
+case $ALGO in
+    md5)    CHECK=$(md5sum "$NOMBRE" | cut -d' ' -f1) ;;
+    sha1)   CHECK=$(sha1sum "$NOMBRE" | cut -d' ' -f1) ;;
+    sha256) CHECK=$(sha256sum "$NOMBRE" | cut -d' ' -f1) ;;
+    sha512) CHECK=$(sha512sum "$NOMBRE" | cut -d' ' -f1) ;;
+esac
+
+# Comparar (sin distinguir mayúsculas)
+if [ "$(echo "$CHECK" | tr '[:upper:]' '[:lower:]')" = "$(echo "$EXPECTED" | tr '[:upper:]' '[:lower:]')" ]; then
+    echo "Checksum correcto. Archivo verificado."
+else
+    echo "Checksum incorrecto. Eliminando archivo..."
+    rm "$NOMBRE"
+    exit 1
+fi

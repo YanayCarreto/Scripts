@@ -1,0 +1,35 @@
+#! /bin/bash
+
+cd "$HOME/.trash" 2>/dev/null || { echo "No se pudo acceder al trash"; exit 1; }
+
+#Listamos archivos
+archivos=(*)
+if [ ${#archivos[@]} -eq 0 ]; then
+    echo "No hay archivos por recuperar"
+    exit 0
+fi
+
+echo "Archivos"
+
+for x in "${archivos[@]}"; do
+    echo "  - $x"
+done
+
+echo ""
+echo -n "Nombre del archivo: "
+read nombre
+
+if [ ! -e "$nombre" ]; then
+    echo "Archivo no encontrado"
+    exit 1
+fi
+
+destino="$OLDPWD"
+
+if mv "$nombre" "$destino/"; then
+    echo "Archivo recuperado en: $destino/$nombre"
+else
+    echo "Archivo No recuperado"
+    exit 1
+fi
+
