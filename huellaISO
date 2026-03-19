@@ -1,7 +1,4 @@
 #!/bin/bash
-
-# Uso: descargar_iso <URL> <checksum_esperado> [md5|sha1|sha256|sha512]
-
 if [ $# -lt 2 ]; then
     echo "Uso: $0 <URL> <checksum> [algoritmo]"
     echo "Ejemplo: $0 https://ejemplo.com/archivo.iso a1b2c3... sha256"
@@ -10,7 +7,7 @@ fi
 
 URL=$1
 EXPECTED=$2
-ALGO=${3:-sha256}  # Por defecto sha256
+ALGO=${3:-sha256}  
 
 # Validar algoritmo
 case $ALGO in
