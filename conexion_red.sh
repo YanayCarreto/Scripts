@@ -34,7 +34,7 @@ fi
 # Función para mostrar el menú principal
 mostrar_menu() {
     clear
-    echo "   GESTOR DE RED CON COMANDOS CLÁSICOS"
+    echo "Conexión a Red"
     echo ""
     echo "1. Mostrar interfaces disponibles y estado"
     echo "2. Activar/Desactivar una interfaz"
@@ -50,12 +50,12 @@ mostrar_menu() {
 # 1. Mostrar interfaces
 mostrar_interfaces() {
     echo ""
-    echo "--- Interfaces de red disponibles ---"
+    echo "-Interfaces de red disponibles"
     ip link show | awk -F': ' '/^[0-9]+:/ {print $2}' | grep -v lo
     echo ""
-    echo "--- Direcciones IP ---"
+    echo "-Direcciones IP"
     ip addr show | grep -E '^[0-9]+:|inet '
-    read -p "Presiona Enter para continuar..."
+    read -p "Presiona Enter para continuar."
 }
 
 # 2. Cambiar estado de interfaz
@@ -66,12 +66,12 @@ cambiar_estado() {
     read -p "Nombre de la interfaz (ej: eth0, wlan0, enp0): " iface
     if ! ip link show "$iface" &>/dev/null; then
         echo "La interfaz $iface no existe."
-        read -p "Presiona Enter..."
+        read -p "Presiona Enter."
         return
     fi
     estado=$(ip link show "$iface" | grep -o "state [^ ]*" | cut -d' ' -f2)
     echo "Estado actual: $estado"
-    read -p "¿Quieres (u)p o (d)own? " accion
+    read -p "¿Quieres (U)p o (D)own? " accion
     case $accion in
         u|U)
             ip link set "$iface" up
@@ -85,7 +85,7 @@ cambiar_estado() {
             echo "Opción no válida."
             ;;
     esac
-    read -p "Presiona Enter..."
+    read -p "Presiona Enter."
 }
 
 # 3. Conexión cableada temporal DHCP
@@ -96,14 +96,14 @@ cable_dhcp_temporal() {
     read -p "Nombre de la interfaz (ej: eth0): " iface
     if ! ip link show "$iface" &>/dev/null; then
         echo "La interfaz $iface no existe."
-        read -p "Presiona Enter..."
+        read -p "Presiona Enter."
         return
     fi
     ip link set "$iface" up
-    echo "Obteniendo IP por DHCP..."
+    echo "Obteniendo IP por DHCP."
     dhclient -v "$iface"
     echo "Conexión DHCP temporal establecida."
-    read -p "Presiona Enter..."
+    read -p "Presiona Enter."
 }
 
 # 4. Conexión cableada temporal estática
@@ -114,7 +114,7 @@ cable_estatica_temporal() {
     read -p "Nombre de la interfaz (ej: eth0): " iface
     if ! ip link show "$iface" &>/dev/null; then
         echo "La interfaz $iface no existe."
-        read -p "Presiona Enter..."
+        read -p "Presiona Enter."
         return
     fi
     read -p "Dirección IP con máscara (ej: 192.168.1.100/24): " ip
@@ -130,7 +130,7 @@ cable_estatica_temporal() {
         echo "nameserver $dns" >> /etc/resolv.conf
     done
     echo "Conexión estática temporal establecida."
-    read -p "Presiona Enter..."
+    read -p "Presiona Enter."
 }
 
 # 5. Hacer permanente la configuración cableada actual
@@ -141,7 +141,7 @@ hacer_permanente_cable() {
     read -p "Nombre de la interfaz (ej: eth0): " iface
     if ! ip link show "$iface" &>/dev/null; then
         echo "La interfaz $iface no existe."
-        read -p "Presiona Enter..."
+        read -p "Presiona Enter."
         return
     fi
     ip_addr=$(ip -4 addr show "$iface" | grep inet | awk '{print $2}' | head -1)
@@ -149,7 +149,7 @@ hacer_permanente_cable() {
     dns_list=$(grep nameserver /etc/resolv.conf | awk '{print $2}' | tr '\n' ' ')
     if [[ -z "$ip_addr" ]]; then
         echo "No hay dirección IP asignada en $iface. Configura primero una conexión temporal."
-        read -p "Presiona Enter..."
+        read -p "Presiona Enter."
         return
     fi
     echo "Configuración actual detectada:"
@@ -186,7 +186,7 @@ hacer_permanente_cable() {
     fi
     ifdown "$iface" 2>/dev/null && ifup "$iface"
     echo "Configuración aplicada."
-    read -p "Presiona Enter..."
+    read -p "Presiona Enter."
 }
 
 # 6. Conexión Wi-Fi temporal
@@ -197,11 +197,11 @@ wifi_temporal() {
     read -p "Nombre de la interfaz Wi-Fi (ej: wlan0): " iface
     if ! iwconfig "$iface" &>/dev/null; then
         echo "Interfaz no válida o no soporta Wi-Fi."
-        read -p "Presiona Enter..."
+        read -p "Presiona Enter."
         return
     fi
     ip link set "$iface" up
-    echo "Escaneando redes Wi-Fi..."
+    echo "Escaneando redes Wi-Fi."
     iwlist "$iface" scan | grep -E "ESSID|Encryption|Quality" | sed 's/^[[:space:]]*//'
     read -p "SSID de la red a la que deseas conectarte: " ssid
     read -p "¿La red tiene contraseña? (s/n): " secured
@@ -219,10 +219,10 @@ EOF
     fi
     killall wpa_supplicant 2>/dev/null
     wpa_supplicant -B -i "$iface" -c /tmp/wpa_$iface.conf
-    echo "Obteniendo IP por DHCP..."
+    echo "Obteniendo IP por DHCP."
     dhclient -v "$iface"
     echo "Conexión Wi-Fi temporal establecida."
-    read -p "Presiona Enter..."
+    read -p "Presiona Enter."
 }
 
 # 7. Hacer permanente la configuración Wi-Fi actual
@@ -233,7 +233,7 @@ hacer_permanente_wifi() {
     read -p "Nombre de la interfaz Wi-Fi (ej: wlan0): " iface
     if ! iwconfig "$iface" &>/dev/null; then
         echo "Interfaz no válida."
-        read -p "Presiona Enter..."
+        read -p "Presiona Enter."
         return
     fi
     if ! pgrep -f "wpa_supplicant.*$iface" > /dev/null; then
@@ -266,7 +266,7 @@ EOF
     echo "    wpa-conf $conf_file" >> /etc/network/interfaces
     ifdown "$iface" 2>/dev/null && ifup "$iface"
     echo "Configuración Wi-Fi permanente guardada."
-    read -p "Presiona Enter..."
+    read -p "Presiona Enter."
 }
 
 # Bucle principal
@@ -281,7 +281,7 @@ while true; do
         6) wifi_temporal ;;
         7) hacer_permanente_wifi ;;
         8) echo "Saliendo..."; exit 0 ;;
-        *) echo "Opción no válida."; read -p "Presiona Enter..." ;;
+        *) echo "Opción no válida."; read -p "Presiona Enter." ;;
     esac
 done
 
