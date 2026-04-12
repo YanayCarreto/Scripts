@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Solo root puede ejecutar
 [ "$EUID" -ne 0 ] && echo "Ejecuta con sudo." && exit 1
 
 # Validar contraseña (reglas fijas: mínimo 8, mayúscula, minúscula, número, especial)
