@@ -113,7 +113,7 @@ else
 fi
 
 
-# Configuración del periodo de Gracia (solo si las cuotas están realmente activas)
+# Configuración del periodo de gracia
 if [ "$HAY_CUOTAS" -eq 0 ] && quotaon -p "$BASE_HOME" &>/dev/null && [[ "$DIR_HOME" == "$BASE_HOME"* ]]; then
     read -p "¿Quieres configurar el período de gracia para el usuario '$USUARIO'? (s/n): " config_gracia
     if [[ "$config_gracia" == "s" || "$config_gracia" == "S" ]]; then
