@@ -1,0 +1,12 @@
+Algoritmo sobre web scraping
+INICIO
+1.Recibir la URL de la página web
+2.Obtener el html de la página
+3.Buscar los enlaces en el html, identificandolos como los que inician
+4.Copia unicamente los enlaces en una lista
+5.Buscar los comentarios que inician <¡--
+6.Copiar todos los comentarios en una lista 
+7.Buscar en el html los enlaces, enfocandose unicamente en los que sigan un formato de elementos alphanúmericos y algunos simbolos especiales en medio (@) y posteriormente caracteres alphanúmericos. 
+8.Copiar dichos correo en una lista
+9. Recorrer cada lista y copiar los enlaces en un archivo.txt 
+FIN

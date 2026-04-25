@@ -1,0 +1,13 @@
+INICIO
+
+1. Recibir la URL de la página web.
+2. Realizar una petición HTTP GET para obtener el contenido HTML.
+3. Analizar el HTML con un parser (BeautifulSoup) y convertirlo a texto plano.
+4. Leer el archivo diccionario.txt y guardar cada línea (sin espacios) en una lista de palabras.
+5. Para cada palabra de la lista:
+     5.1. Convertir la palabra y el texto a minúsculas.
+     5.2. Buscar si la palabra aparece dentro del texto.
+     5.3. Si se encuentra, mostrar “Encontrado 'palabra'”.
+     5.4. Si no se encuentra, mostrar “No encontrado 'palabra'”.
+Fin del recorrido.
+ FIN
